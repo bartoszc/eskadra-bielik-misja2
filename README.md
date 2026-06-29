@@ -238,7 +238,7 @@ Projekt wykorzystuje BigQuery z funkcją Vector Search jako bazę z wiedzą kont
         -F "file=@vector_store/hotel_rules.csv"
    ```
 
-2. Sprawdź w Google Cloud Console -> BigQuery, czy rekordy pojawiły się w tabeli `rag_dataset.hotel_rules` 
+2. Sprawdź w [Google Cloud Console → BigQuery](https://console.cloud.google.com/bigquery), czy rekordy pojawiły się w tabeli `rag_dataset.hotel_rules`
    *(Proces indeksowania danych do Vector Search może chwilę potrwać, jednak dane tekstowe widoczne są natychmiast).*
 
 3. Wykonaj testowe zapytanie wykorzystując RAG, dopytujące o informacje z wgranych reguł
