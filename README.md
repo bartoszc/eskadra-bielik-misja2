@@ -77,9 +77,11 @@ Przykładowy kod źródłowy zawarty w tym repozytorium pozwala w szczególnośc
 
 ## 2. Konfiguracja zmiennych środowiskowych i usług Google Cloud
 
-1. Przeanalizuj skrypt `setup_env.sh`
+1. Przeanalizuj skrypt `setup_env.sh` w Cloud Shell Editor
 
-2. Otwórz ponownie terminal Cloud Shell
+2. Otwórz terminal w Cloud Shell Editor: kliknij w menu **Terminal → New Terminal** (lub użyj skrótu `` Ctrl+` ``)
+>[!TIP]
+>Po uruchomieniu `cloudshell workspace .` otworzył się edytor podobny do VS Code. Do wpisywania kolejnych komend używaj terminala **wewnątrz tego edytora** — nie musisz otwierać osobnej karty Cloud Shell w przeglądarce.
 
 3. Uruchom skrypt `setup_env.sh`
    ```bash
@@ -112,6 +114,12 @@ Przykładowy kod źródłowy zawarty w tym repozytorium pozwala w szczególnośc
    ./cloud_run.sh
    ```
 3. Sprawdź status usługi `bielik` w Cloud Console - Cloud Run - Services
+>[!TIP]
+>Szybki sposób: otwórz [console.cloud.google.com/run](https://console.cloud.google.com/run) i upewnij się, że wybrany jest właściwy projekt. Możesz też sprawdzić status z terminala:
+>```bash
+>gcloud run services describe $LLM_SERVICE --region $REGION --format="value(status.conditions[0].type)"
+>```
+>Odpowiedź `Ready` oznacza, że usługa działa poprawnie.
 
 4. Przeanalizuj plik `llm/llm_test1.sh` i zadaj pierwsze pytanie modelowi Bielik uruchamiając ten skrypt
    ```bash
@@ -132,6 +140,11 @@ Przykładowy kod źródłowy zawarty w tym repozytorium pozwala w szczególnośc
    ./cloud_run.sh
    ```
 3. Sprawdź status usługi `embedding-gemma` w Cloud Console - Cloud Run - Services
+>[!TIP]
+>Otwórz [console.cloud.google.com/run](https://console.cloud.google.com/run) lub sprawdź z terminala:
+>```bash
+>gcloud run services describe $EMBEDDING_SERVICE --region $REGION --format="value(status.conditions[0].type)"
+>```
 
 4. Przeanalizuj plik `embedding_model/embedding_test1.sh` i wygeneruj pierwsze testowe embeddingi (wektory) dla przykładowego tekstu uruchamiając ten skrypt
    ```bash
