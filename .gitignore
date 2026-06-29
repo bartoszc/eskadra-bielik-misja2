@@ -212,3 +212,10 @@ __marimo__/
 
 # Claude Code local config
 .claude/
+
+# Pliki prowadzącego — niewidoczne dla uczestników
+docs/warsztaty/
+docs/superpowers/
+Eskadra Bielika*
+eskadra-bielika-closed.md
+.superpowers/
