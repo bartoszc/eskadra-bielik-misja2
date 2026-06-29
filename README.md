@@ -29,13 +29,14 @@ Przykładowy kod źródłowy zawarty w tym repozytorium pozwala w szczególnośc
 
 ## 1. Przygotowanie projektu Google Cloud
 
-1. Uzyskaj kredyt Cloud **OnRamp**, lub skonfiguruj płatności w projekcie Google Cloud
+1. Zaloguj się na konto **Frictionless** — dane logowania (login i hasło) znajdziesz na kartce otrzymanej od trenera. Otwórz **tryb incognito** w przeglądarce i przejdź do: [console.cloud.google.com](https://console.cloud.google.com)
+
+>[!TIP]
+>Jeżeli Google wyświetla komunikat „Couldn't sign in" / „Verify it's you", spróbuj innej sieci (np. hotspot z telefonu). Jeśli problem nie ustępuje, pracuj w parze z innym uczestnikiem.
 
 2. Przejdź do **Google Cloud Console**: [console.cloud.google.com](https://console.cloud.google.com)
 
-3. Stwórz nowy projekt Google Cloud i wybierz go aby był aktywny
->[!TIP]
->Możesz sprawdzić dostępność kredytów OnRamp wybierając z menu po lewej stronie: Billing / Credits
+3. Projekt Google Cloud jest już dla Ciebie przygotowany — **wybierz go z listy projektów** (ikona projektu w górnym pasku nawigacyjnym)
 
 4. Otwórz Cloud Shell ([dokumentacja](https://cloud.google.com/shell/docs))
 
@@ -52,6 +53,9 @@ Przykładowy kod źródłowy zawarty w tym repozytorium pozwala w szczególnośc
    ```
 >[!TIP]
 >Jeżeli projekt jest nieodpowiedni, zmień go za pomocą komendy: `gcloud config set project <ID_TWOJEGO_PROJEKTU>`
+
+>[!IMPORTANT]
+>**Najczęstszy błąd uczestników:** zalogowanie się na konto Frictionless, ale zapomnienie o wybraniu projektu z listy. Zawsze sprawdź `gcloud config get project` po zalogowaniu — jeśli wynik jest pusty lub wskazuje inny projekt, ustaw właściwy komendą: `gcloud config set project <ID_TWOJEGO_PROJEKTU>`
 
 >[!CAUTION]
 >Nie pomyl nazwy projektu z ID projektu! Nie zawsze są one takie same.
