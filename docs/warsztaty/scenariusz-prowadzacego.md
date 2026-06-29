@@ -50,25 +50,30 @@ Cała sztuczka czasowa polega na jednym: **deploy Bielika (GPU L4) trwa kilkana�
 
 **Komendy (uczestnicy wykonują razem):**
 
+> 🎙️ **Powiedz zanim zaczniesz:** Zanim wdrożymy cokolwiek, upewniamy się, że Cloud Shell widzi właściwe konto i projekt — pomyłka tutaj oznacza, że usługi powstaną w cudzym projekcie. Potem pobieramy kod warsztatu i włączamy cztery usługi Google Cloud, których potrzebujemy. Na koniec dajemy naszemu kontu prawo wywoływania prywatnych usług — bez tego orchestrator dostanie błąd 403 przy próbie wywołania modeli.
+
 ```bash
-# Weryfikacja konta i projektu
+# → sprawdzamy, czy gcloud widzi nasze konto (powinniśmy widzieć swój email)
 gcloud auth list
+# → weryfikujemy ID projektu — tu powstaną wszystkie nasze zasoby
 gcloud config get project
 
-# Klon repo i wejście do katalogu
+# → pobieramy cały kod warsztatu z GitHuba
 git clone https://github.com/bartoszc/eskadra-bielik-misja2
+# → wchodzimy do katalogu — stąd będziemy uruchamiać wszystkie komendy warsztatu
 cd eskadra-bielik-misja2
 
-# Wczytanie zmiennych środowiskowych
+# → ładujemy zmienne środowiskowe (PROJECT_ID, REGION itp.) — bez nich skrypty nie wiedzą, dokąd deployować
 source setup_env.sh
 
-# Włączenie potrzebnych usług
-gcloud services enable run.googleapis.com
-gcloud services enable cloudbuild.googleapis.com
-gcloud services enable artifactregistry.googleapis.com
-gcloud services enable bigquery.googleapis.com
+# → aktywujemy usługi Google Cloud potrzebne w tym warsztacie
+gcloud services enable run.googleapis.com           # Cloud Run — środowisko dla naszych kontenerów
+gcloud services enable cloudbuild.googleapis.com    # Cloud Build — buduje obrazy Dockera z kodu
+gcloud services enable artifactregistry.googleapis.com  # Artifact Registry — przechowuje zbudowane obrazy
+gcloud services enable bigquery.googleapis.com      # BigQuery — nasza baza wektorowa
 
-# Uprawnienie do wywoływania prywatnych usług Cloud Run
+# → dajemy kontu prawo wywoływania prywatnych usług Cloud Run
+# (orchestrator będzie wołał bielika i embedding — bez tego dostanie 403)
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member=user:$(gcloud config get-value account) \
   --role='roles/run.invoker'
@@ -91,8 +96,12 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 **Komendy:**
 
+> 🎙️ **Powiedz zanim zaczniesz:** To najważniejszy krok czasowy całego warsztatu. Budowa obrazu Ollama z wagami modelu (~5 GB) zajmie kilkanaście minut. Uruchamiamy go TERAZ, żeby pracował w tle — gdy wrócimy z teorii, Bielik będzie już gotowy.
+
 ```bash
+# → przechodzimy do katalogu z definicją serwisu LLM
 cd llm
+# → uruchamiamy deploy: Cloud Build buduje obraz, pobiera wagi ~5 GB, startuje serwis na GPU nvidia-l4
 ./cloud_run.sh
 ```
 
@@ -128,19 +137,21 @@ To główny blok teoretyczny. Tłumacz każdą koncepcję krótko, wiążąc ją
 
 **Komendy:**
 
+> 🎙️ **Powiedz zanim zaczniesz:** Dwa szybkie elementy. Najpierw model embeddingowy — mały, CPU-only, deploy zajmie kilka minut. Zamienia zdania na wektory liczb, które będziemy przechowywać w BigQuery. Potem tworzymy tabelę — to będzie nasza baza wektorowa z natywnym wyszukiwaniem semantycznym.
+
 ```bash
-# (jeśli ktoś jest jeszcze w katalogu llm/)
+# → wracamy do głównego katalogu (jeśli ktoś jest jeszcze w llm/)
 cd ..
 
-# Deploy modelu embeddingowego (CPU — szybki)
+# → deployjemy model embeddingowy (CPU-only, buduje się szybko)
 cd embedding_model
 ./cloud_run.sh
 cd ..
 
-# Inicjalizacja bazy wektorowej w BigQuery
+# → tworzymy tabelę hotel_rules w BigQuery ze schematem: id, content, embedding (FLOAT64 REPEATED)
 cd vector_store
-pip install google-cloud-bigquery
-python init_db.py
+pip install google-cloud-bigquery  # instalujemy klienta BigQuery
+python init_db.py                  # tworzy dataset rag_dataset i tabelę hotel_rules
 cd ..
 ```
 
@@ -159,23 +170,25 @@ cd ..
 
 **Komendy:**
 
+> 🎙️ **Powiedz zanim zaczniesz:** Zanim wdrożymy aplikację spinającą wszystko razem, sprawdzamy oba modele bezpośrednio — żeby wiedzieć, że działają, zanim weźmiemy je za pewnik. Orchestrator to jedyna publiczna usługa: przyjmuje pytania od użytkowników, wołuje embedding i Bielika, a na koniec oddaje odpowiedź z kontekstem.
+
 ```bash
-# Szybki test Bielika (zadaje pytanie o chlor w basenie)
+# → testujemy Bielika bezpośrednio: skrypt pyta go o chlor w basenie i wypisuje odpowiedź
 cd llm
 ./llm_test1.sh
 cd ..
 
-# (opcjonalnie) test embeddingu — zwraca wektor liczb
+# → (opcjonalnie) testujemy embedding: skrypt wysyła zdanie i zwraca wektor liczb
 cd embedding_model
 ./embedding_test1.sh
 cd ..
 
-# Deploy aplikacji FastAPI (orchestrator) — sam dociąga URL-e modeli
+# → deployjemy orchestrator (FastAPI); skrypt sam odczyta URL-e bielika i embeddingu i wstrzyknie je jako env vars
 cd orchestration
 ./cloud_run.sh
 cd ..
 
-# Zapis adresu usługi do zmiennej
+# → zapisujemy publiczny URL orchestratora — będziemy go używać przez resztę warsztatu
 export ORCHESTRATION_URL=$(gcloud run services describe orchestration-api \
   --region $REGION --format="value(status.url)")
 echo $ORCHESTRATION_URL
@@ -197,12 +210,14 @@ echo $ORCHESTRATION_URL
 
 **Komendy:**
 
+> 🎙️ **Powiedz zanim zaczniesz:** Mamy działający system, ale baza jest pusta — model nie ma jeszcze żadnej wiedzy o naszym hotelu. Najpierw wgrywamy regulamin: orchestrator zamieni każdą regułę na wektor i zapisze w BigQuery. Potem zadamy pierwsze pytanie — zobaczymy pełny przepływ RAG w akcji.
+
 ```bash
-# Zasilenie bazy przykładowymi regułami hotelowymi
+# → wysyłamy CSV z regulaminem hotelu; orchestrator osadzi każdą regułę i zapisze w BigQuery
 curl -X POST "$ORCHESTRATION_URL/ingest" \
      -F "file=@vector_store/hotel_rules.csv"
 
-# Pierwsze pytanie RAG
+# → pierwsze pytanie RAG: query → embedding → VECTOR_SEARCH → kontekst → Bielik → odpowiedź
 curl -X POST "$ORCHESTRATION_URL/ask" \
      -H "Content-Type: application/json" \
      -d '{"query": "Jak często powinien być mierzony poziom chloru w basenie?"}'
@@ -242,10 +257,13 @@ Potem otwórz **Web UI**: wklej `$ORCHESTRATION_URL` w przeglądarkę.
 
 **Co mówić:** „Teraz najlepsza część — pokażę, jak łatwo zmienić zachowanie asystenta i czym go karmimy."
 
+> 🎙️ **Powiedz zanim zaczniesz:** Cała moc tego systemu tkwi w tym, że zmiana zachowania asystenta to edycja jednej zmiennej w Pythonie. Zmieniamy prompt → redeployujemy orchestrator → ten sam model odpowiada zupełnie inaczej. Ćwiczenie B pokazuje, że to samo działa z własnymi danymi — nie tylko hotelowymi.
+
 **Ćwiczenie A — zmiana persony (edycja promptu):**
 Otwórz `orchestration/main.py`, znajdź prompt w endpoincie `/ask` (zmienna `prompt`, ok. linii 137) i każ Bielikowi odpowiadać np. jak pirat albo ekspert IT. Po zmianie:
 
 ```bash
+# → redeployujemy orchestrator z nowym promptem — to wystarczy, żeby zmienić całe zachowanie Bielika
 cd orchestration
 ./cloud_run.sh
 cd ..
@@ -257,6 +275,7 @@ Zadaj to samo pytanie i porównaj ton odpowiedzi.
 Stwórz własny mały CSV (kolumny `id,text`) z dowolną „wiedzą firmową" i zasil bazę:
 
 ```bash
+# → wysyłamy własny CSV; system automatycznie osadzi dane i doda do bazy — od teraz Bielik "wie" o naszych danych
 curl -X POST "$ORCHESTRATION_URL/ingest" -F "file=@moj_plik.csv"
 ```
 
