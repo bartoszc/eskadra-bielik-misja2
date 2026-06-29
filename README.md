@@ -150,6 +150,33 @@ Przykładowy kod źródłowy zawarty w tym repozytorium pozwala w szczególnośc
    ```bash
    ./embedding_test1.sh
    ```
+>[!TIP]
+>**Czym są embeddingi — ta długa tablica liczb?**
+>
+>Model zamienił zdanie `"Sample text"` na tablicę setek liczb zmiennoprzecinkowych. To właśnie **embedding** — reprezentacja wektorowa tekstu, czyli jego „odcisk palca" znaczeniowy w przestrzeni wielowymiarowej.
+>
+>Kluczowa własność: **podobne znaczeniowo teksty mają podobne wektory** — ich „odcisk palca" ląduje blisko siebie, nawet jeśli użyto zupełnie innych słów:
+>
+>```
+>Zapytanie użytkownika:      "O której podawane jest śniadanie?"
+>                                         │
+>                                 model embeddingowy
+>                                         │
+>                                         ▼
+>                             wektor: [0.21, -0.45, 0.78, ...]
+>                                         │
+>                              BigQuery Vector Search
+>                              (szuka najbliższych wektorów)
+>                                         │
+>                        ┌────────────────┼────────────────┐
+>                        ▼                ▼                ▼
+>              "Śniadanie serwowane   "Kuchnia czynna   "Basen otwarty
+>               w godz. 7:00–10:00"   od 6:30"          8:00–22:00"
+>               podobieństwo: 0.94    podobieństwo: 0.81  podobieństwo: 0.23
+>```
+>
+>BigQuery zwróci fragmenty z najwyższym podobieństwem (tu: reguły o śniadaniu i kuchni) jako kontekst dla Bielika. To jest serce RAG — model nie „zgaduje", lecz odpowiada na podstawie naszych dokumentów.
+
 5. Wróć do głównego katalogu projektu
    ```bash
    cd ..
