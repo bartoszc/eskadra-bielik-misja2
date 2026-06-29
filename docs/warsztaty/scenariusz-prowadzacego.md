@@ -3,7 +3,7 @@
 **Czas trwania:** ~2h (jeden blok)
 **Audytorium:** mieszane (część zna chmurę/Pythona, część nie)
 **Model warsztatu:** Hybryda — ciężki deploy Bielika (GPU) startuje w tle podczas teorii, uczestnicy samodzielnie robią szybkie i pouczające kroki.
-**Repo:** `github.com/avedave/eskadra-bielik-misja2`
+**Repo:** `github.com/bartoszc/eskadra-bielik-misja2`
 
 ---
 
@@ -56,7 +56,7 @@ gcloud auth list
 gcloud config get project
 
 # Klon repo i wejście do katalogu
-git clone https://github.com/avedave/eskadra-bielik-misja2
+git clone https://github.com/bartoszc/eskadra-bielik-misja2
 cd eskadra-bielik-misja2
 
 # Wczytanie zmiennych środowiskowych

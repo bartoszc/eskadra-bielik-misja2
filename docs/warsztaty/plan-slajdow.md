@@ -54,7 +54,7 @@ w oparciu o model Bielik i Google Cloud
 ## Slajd 5 — Repo i autor · **KEEP**
 
 ```
-github.com/avedave/eskadra-bielik-misja2
+github.com/bartoszc/eskadra-bielik-misja2
 Instrukcja krok po kroku
 
 Autor: Dawid Ostrowski
