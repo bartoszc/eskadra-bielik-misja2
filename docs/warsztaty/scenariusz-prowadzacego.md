@@ -77,7 +77,9 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 **Checkpoint:** „Wszyscy widzą swój `PROJECT_ID` po `echo $PROJECT_ID`?"
 
 **⚠️ Pułapki:**
-- Kupony **Google Cloud Credits** (slajd 6) — upewnij się, że każdy ma aktywny billing/kredyt PRZED warsztatem.
+- **Konta Frictionless** (kartki z loginem/hasłem) — upewnij się PRZED warsztatem, że masz wydrukowany i pocięty PDF z kontami. Każdy uczestnik loguje się w trybie incognito na console.cloud.google.com i **wybiera istniejący projekt z listy**.
+- Najczęstszy błąd: zalogowanie się, ale zapomnienie o wybraniu projektu — sprawdź checkpoint po konfiguracji środowiska.
+- **Edge case kont:** jeśli uczestnik nie może zalogować się na żadne z przydzielonych kont (błąd „Couldn't sign in" lub „Verify it's you" na każdym kolejnym) — inna przeglądarka/incognito/sieć nie pomoże. Rozwiązanie: uczestnik pracuje w parze z kimś, kto ma działające konto, i próbuje samodzielnie w domu.
 - Mylenie **nazwy projektu** z **ID projektu** — to nie zawsze to samo.
 - `enable services` potrafi chwilę trwać — można puścić w tle.
 
@@ -293,8 +295,8 @@ Jeśli u części sali deploy `bielik` blokuje quota GPU:
 
 ## 📋 Checklista prowadzącego (przed warsztatem)
 
-- [ ] Każdy uczestnik ma konto Google Cloud z aktywnym kredytem/billingiem.
+- [ ] PDF z kontami Frictionless wydrukowany i pocięty (dokładna liczba uczestników = z Lumy).
 - [ ] Sprawdzona dostępność quota GPU L4 w regionie `europe-west1` (lub gotowa wspólna usługa `bielik`).
 - [ ] Przetestowany cały przepływ na czysto (od `git clone` do `/ask`).
 - [ ] Slajdy uzupełnione (patrz `plan-slajdow.md`), w tym diagram RAG (8a) i architektury (8b).
-- [ ] Link do repo i kuponów gotowy do wyświetlenia.
+- [ ] Link do repo gotowy do wyświetlenia; PDF z kontami rozdany przy wejściu.
