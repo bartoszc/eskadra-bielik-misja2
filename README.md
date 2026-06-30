@@ -303,3 +303,15 @@ Aby otworzyć interfejs graficzny testowej aplikacji z poziomu Twojego projektu:
 
 
 
+
+## 10. Materiały e-learningowe
+
+Po zakończeniu warsztatów możesz samodzielnie wrócić do materiałów w katalogu [`assets/`](assets/):
+
+- **Interaktywne diagramy architektury** ([`assets/diagrams/`](assets/diagrams/)) — cztery pliki HTML wizualizujące każdy etap systemu RAG: ingestion, embeddingi, zapytanie. Otwórz dowolny plik `.html` bezpośrednio w przeglądarce po sklonowaniu repo.
+
+- **Notebook Google Colab** ([`assets/notebooks/warsztat_colab.ipynb`](assets/notebooks/warsztat_colab.ipynb)) — pełna alternatywna ścieżka warsztatu bez potrzeby konta GCP. Działa na darmowym GPU T4 w Google Colab. Czas wykonania: ok. 36 minut.
+
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bartoszc/eskadra-bielik-misja2/blob/main/assets/notebooks/warsztat_colab.ipynb)
+
+*Materiały opracowane przez [LegardT77](https://github.com/Legard777). Zaadaptowane dla tego repo.*
